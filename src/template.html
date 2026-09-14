@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>$title$</title>
+    <script>
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+                let heights = [];
+                let scrollIndex = 0;
+                for (const image of document.getElementsByTagName("h3")) {
+                    let bounds = image.getBoundingClientRect();
+                    heights.push(bounds.top + window.scrollY);
+                    if (bounds.top + bounds.height + window.scrollY < window.scrollY + 10) {
+                        scrollIndex += 1;
+                    }
+                }
+                let shift = event.key === 'ArrowRight' ? 1 : -1;
+                let jumpIndex = Math.min(heights.length, Math.max(0, scrollIndex + shift));
+                window.scroll({
+                    left: 0,
+                    top: heights[jumpIndex],
+                    behavior: "smooth"
+                });
+            }
+        });
+    </script>
+</head>
+
+<body style="margin: 0;">
+    $here$
+</body>
+
+</html>
