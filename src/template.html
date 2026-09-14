@@ -13,7 +13,7 @@
                 for (const image of document.getElementsByTagName("h3")) {
                     let bounds = image.getBoundingClientRect();
                     heights.push(bounds.top + window.scrollY);
-                    if (bounds.top + bounds.height + window.scrollY < window.scrollY + 10) {
+                    if (bounds.top + bounds.height < 10) {
                         scrollIndex += 1;
                     }
                 }

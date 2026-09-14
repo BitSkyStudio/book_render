@@ -160,6 +160,7 @@ name = "book_render"
 version = "0.1.0"
 dependencies = [
  "image",
+ "rayon",
  "uuid",
  "webp",
  "zip",

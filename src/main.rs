@@ -1,6 +1,9 @@
-use std::{collections::HashMap, env::args, fmt::format, fs::File, io::Read, path::Path};
+use std::{
+    collections::HashMap, env::args, fmt::format, fs::File, io::Read, path::Path, time::Instant,
+};
 
 use image::{DynamicImage, EncodableLayout, codecs::webp::WebPEncoder};
+use rayon::iter::{IntoParallelIterator, ParallelIterator};
 use uuid::Uuid;
 use webp::{Encoder, PixelLayout};
 use zip::ZipArchive;
@@ -62,11 +65,24 @@ fn main() {
             include_str!("template.html")
                 .to_string()
                 .replace("$here$", &content)
-                .replace("$title$", &args[2]),
+                .replace(
+                    "$title$",
+                    &format!(
+                        "{} {}",
+                        args[2],
+                        volume
+                            .file_name()
+                            .into_string()
+                            .unwrap()
+                            .split(".")
+                            .next()
+                            .unwrap()
+                    ),
+                ),
         )
         .unwrap();
     }
-    for (id, page) in pages {
+    pages.into_par_iter().for_each(|(id, page)| {
         let mut page_path = output_folder.to_path_buf();
         page_path.push("pages");
         page_path.push(id.to_string());
@@ -75,5 +91,5 @@ fn main() {
         let raw_data = rgba.as_bytes();
         let encoder = Encoder::new(raw_data, PixelLayout::Rgba, page.width(), page.height());
         std::fs::write(page_path, &encoder.encode(70.)[..]);
-    }
+    });
 }
